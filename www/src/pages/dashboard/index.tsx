@@ -23,10 +23,10 @@ type DashboardCardProps = {
 
 function DashboardCard({ href, icon, title, description }: DashboardCardProps) {
   return (
-    <Link to={href} className="bg-gray-800 p-4 w-full rounded-lg flex flex-col gap-2">
-      {icon}
-      <p className="text-xl font-medium">{title}</p>
-      <p className="text-gray-400">{description}</p>
+    <Link to={href} className="bg-gray-800 p-4 w-full rounded-lg flex flex-col gap-2 group">
+      <span className="group-hover:text-primary-400 transition-colors">{icon}</span>
+      <p className="text-xl font-medium group-hover:text-primary-400 transition-colors">{title}</p>
+      <p className="text-gray-400 group-hover:text-primary-400 transition-colors">{description}</p>
     </Link>
   );
 }
