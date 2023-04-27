@@ -1,4 +1,4 @@
-import { Router } from "itty-router";
+import { IRequest, Router } from "itty-router";
 import { createClient } from "@supabase/supabase-js";
 import { z } from "zod";
 import { Database } from "./types/supabase";
@@ -16,46 +16,64 @@ const temperatureSchema = z.object({
 
 const router = Router();
 
-router.get("/api/cities", async (request, { SUPABASE_URL, SUPABASE_ANON_KEY }: Env) => {
-  const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_ANON_KEY);
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "HEAD,GET,POST,OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type",
+};
+
+async function handleOptions(request: IRequest, env: Env) {
+  return new Response(null, {
+    status: 204,
+    headers: {
+      ...corsHeaders,
+    },
+  });
+}
+
+async function handleGetCities(request: IRequest, env: Env) {
+  const supabase = createClient<Database>(env.SUPABASE_URL, env.SUPABASE_ANON_KEY);
 
   const { data } = await supabase.from("city").select("*");
 
   return new Response(JSON.stringify(data), {
     status: 200,
     headers: {
+      ...corsHeaders,
       "Content-Type": "application/json",
     },
   });
-});
+}
 
-router.get("/api/cities/:id", async (request, { SUPABASE_URL, SUPABASE_ANON_KEY }: Env) => {
-  const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_ANON_KEY);
+async function handleGetCity(request: IRequest, env: Env) {
+  const supabase = createClient<Database>(env.SUPABASE_URL, env.SUPABASE_ANON_KEY);
 
   const { data } = await supabase.from("city").select("*").eq("id", request.params.id);
 
   return new Response(JSON.stringify(data), {
     status: 200,
     headers: {
+      ...corsHeaders,
       "Content-Type": "application/json",
     },
   });
-});
+}
 
-router.get("/api/temperatures", async (request, { SUPABASE_URL, SUPABASE_ANON_KEY }: Env) => {
-  const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_ANON_KEY);
+async function handleGetTemperatures(request: IRequest, env: Env) {
+  const supabase = createClient<Database>(env.SUPABASE_URL, env.SUPABASE_ANON_KEY);
 
   const { data } = await supabase.from("temperature").select("*");
 
   return new Response(JSON.stringify(data), {
     status: 200,
     headers: {
+      ...corsHeaders,
       "Content-Type": "application/json",
     },
   });
-});
+}
 
-router.post("/api/temperatures", async (request, { SUPABASE_URL, SUPABASE_ANON_KEY }: Env) => {
+async function handlePostTemperatures(request: IRequest, env: Env) {
   const body = await request.json();
 
   const parsedBody = temperatureSchema.safeParse(body);
@@ -65,11 +83,13 @@ router.post("/api/temperatures", async (request, { SUPABASE_URL, SUPABASE_ANON_K
       status: 404,
       headers: {
         "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, POST",
       },
     });
   }
 
-  const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_ANON_KEY);
+  const supabase = createClient<Database>(env.SUPABASE_URL, env.SUPABASE_ANON_KEY);
 
   const { data, error } = await supabase.from("temperature").insert(parsedBody.data);
 
@@ -78,17 +98,24 @@ router.post("/api/temperatures", async (request, { SUPABASE_URL, SUPABASE_ANON_K
       status: 404,
       headers: {
         "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, POST",
       },
     });
   }
 
-  return new Response(JSON.stringify(data), {
+  return new Response(JSON.stringify("OK"), {
     status: 200,
     headers: {
       "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "POST",
+      "Access-Control-Allow-Headers": "Content-Type",
     },
   });
-});
+}
+
+router.options("*", handleOptions).get("/api/cities", handleGetCities).get("/api/cities/:id", handleGetCity).get("/api/temperatures", handleGetTemperatures).post("/api/temperatures", handlePostTemperatures);
 
 export default {
   fetch: router.handle,
