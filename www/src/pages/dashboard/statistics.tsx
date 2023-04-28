@@ -3,7 +3,6 @@ import Input from "../../components/ui/Input";
 import LoadingSkeleton from "../../components/ui/LoadingSkeleton";
 import calculateMode from "../../utils/calculateMode";
 import calculateWarmAndColdDays from "../../utils/calculateWarmAndColdDays";
-import celsiusToKelvin from "../../utils/celsiusToKelvin";
 import kelvinToCelsius from "../../utils/kelvinToCelsius";
 import useFilterTemperatureData from "../../utils/useFilterTemperatureData";
 import { StatisticsCard } from "./new";
@@ -27,8 +26,8 @@ export default function DashboardStatistics() {
 
   const onSubmit: SubmitHandler<FormInputs> = (data) => {
     const formData = {
-      startDate: Math.floor(new Date(data.startDate).getTime() / 1000).toString(),
-      endDate: Math.floor(new Date(data.endDate).getTime() / 1000).toString(),
+      startDate: Math.floor(new Date(data.startDate).getTime()).toString(),
+      endDate: Math.floor(new Date(data.endDate).getTime()).toString(),
     };
 
     setSearchParams(formData);
@@ -45,6 +44,8 @@ export default function DashboardStatistics() {
   let daysAboveAverage = temperatureData ? temperatureData.filter((day) => day.temperature >= averageTemperature).length : 0;
 
   const mostCommonTemperature = calculateMode({ temperatureData });
+
+  const isSearchParams = searchParams.get("startDate") && searchParams.get("endDate");
 
   function clearFilters() {
     reset();
@@ -72,7 +73,7 @@ export default function DashboardStatistics() {
               <div className="flex items-center gap-2">Filter by dates</div>
             </Button>
 
-            <Button onClick={clearFilters} size="l" type="button" fullWidth>
+            <Button intent={isSearchParams ? "primary" : "disabled"} disabled={!isSearchParams} onClick={clearFilters} size="l" type="button" fullWidth>
               Clear filters
             </Button>
           </div>
@@ -80,7 +81,8 @@ export default function DashboardStatistics() {
       </div>
 
       {status === "loading" && <LoadingSkeleton size={5} />}
-      {temperatureData && (
+
+      {temperatureData && temperatureData.length > 0 && (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <StatisticsCard title="Average temperature" value={`${averageTemperatureToCelsisus}°C`} />
           <StatisticsCard title="Cold days" value={`${coldDays}`} />
@@ -89,6 +91,8 @@ export default function DashboardStatistics() {
           <StatisticsCard title="Most common temperature" value={`${mostCommonTemperature}°C`} />
         </div>
       )}
+
+      {temperatureData && temperatureData?.length === 0 && <div>No dates for the selected range.</div>}
     </div>
   );
 }
