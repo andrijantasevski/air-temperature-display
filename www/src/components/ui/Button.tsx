@@ -10,6 +10,7 @@ const button = cva(["font-medium", "transition-colors", "shadow-sm", "focus:outl
       success: ["bg-success-600", "text-white", "hover:bg-success-700", "focus:ring-success-500", "border-transparent"],
       warning: ["bg-warning-400", "text-warning-900", "hover:bg-warning-500", "focus:ring-warning-400", "border-transparent"],
       error: ["bg-error-600", "text-error-50", "hover:bg-error-700", "focus:ring-error-500", "border-transparent"],
+      loading: ["bg-primary-900", "text-white", "border-transparent"],
       disabled: ["bg-gray-100", "text-gray-400", "cursor-auto", "border-transparent"],
     },
     size: {

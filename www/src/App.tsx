@@ -8,16 +8,13 @@ import DashboardNew from "./pages/dashboard/new";
 import DashboardStatistics from "./pages/dashboard/statistics";
 import DashboardOverview from "./pages/dashboard/overview";
 import DashboardByCity from "./pages/dashboard/by-city";
+import { Toaster } from "react-hot-toast";
 
 const queryClient = new QueryClient();
 
 function App() {
   return (
     <>
-      <head>
-        <title>Air temperature</title>
-      </head>
-
       <QueryClientProvider client={queryClient}>
         <div className="min-h-screen bg-gray-950 text-gray-50">
           <BrowserRouter>
@@ -33,6 +30,7 @@ function App() {
             </Routes>
           </BrowserRouter>
         </div>
+        <Toaster />
         <ReactQueryDevtools initialIsOpen={false} position="bottom-right" />
       </QueryClientProvider>
     </>
