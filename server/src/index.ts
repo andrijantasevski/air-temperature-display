@@ -62,6 +62,23 @@ async function handleGetCity(request: IRequest, env: Env) {
 async function handleGetTemperatures(request: IRequest, env: Env) {
   const supabase = createClient<Database>(env.SUPABASE_URL, env.SUPABASE_ANON_KEY);
 
+  const searchParams = new URL(request.url).searchParams;
+
+  const startDate = searchParams.get("startDate");
+  const endDate = searchParams.get("endDate");
+
+  if (startDate && endDate) {
+    const { data } = await supabase.from("temperature").select("*").gte("time", startDate).lte("time", endDate);
+
+    return new Response(JSON.stringify(data), {
+      status: 200,
+      headers: {
+        ...corsHeaders,
+        "Content-Type": "application/json",
+      },
+    });
+  }
+
   const { data } = await supabase.from("temperature").select("*");
 
   return new Response(JSON.stringify(data), {

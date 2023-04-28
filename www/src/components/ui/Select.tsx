@@ -16,32 +16,37 @@ const input = cva(["bg-transparent", "border", "rounded-lg", "shadow-sm"], {
   },
 });
 
-interface Props extends React.InputHTMLAttributes<HTMLInputElement>, VariantProps<typeof input> {
+interface Props extends React.SelectHTMLAttributes<HTMLSelectElement>, VariantProps<typeof input> {
   id: string;
   children: React.ReactNode;
-  type: "text" | "email" | "password" | "url" | "tel" | "date";
   errorMessage: string;
+  label: string;
   placeholder: string;
 }
 
-const Input = forwardRef<HTMLInputElement, Props>(({ id, children, fullWidth, intent, errorMessage, ...props }, ref) => {
+const Select = forwardRef<HTMLSelectElement, Props>(({ id, children, fullWidth, intent, errorMessage, label, placeholder, ...props }, ref) => {
   return (
     <div className="flex flex-col gap-2">
       <div className="flex items-center justify-between">
         <label className="block font-medium" htmlFor={id}>
-          {children}
+          {label}
         </label>
 
         {intent === "error" && <span className="text-error-500 font-medium">{errorMessage}</span>}
       </div>
 
       <div className="relative">
-        <input ref={ref} id={id} className={input({ fullWidth, intent })} {...props} />
+        <select defaultValue={""} ref={ref} id={id} className={input({ fullWidth, intent })} {...props}>
+          <option className="bg-gray-800 text-gray-50" value="" disabled>
+            {placeholder}
+          </option>
+          {children}
+        </select>
       </div>
     </div>
   );
 });
 
-Input.displayName = "Input";
+Select.displayName = "Input";
 
-export default Input;
+export default Select;
