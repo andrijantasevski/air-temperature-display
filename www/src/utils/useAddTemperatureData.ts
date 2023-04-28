@@ -34,7 +34,7 @@ export default function useAddTemperatureData() {
           background: "#1F2937",
           color: "#f9fafb",
         },
-        duration: 1000,
+        duration: 1500,
       });
 
       queryClient.invalidateQueries(["temperature"]);

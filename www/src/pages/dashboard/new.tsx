@@ -5,17 +5,20 @@ import useAddTemperatureData from "../../utils/useAddTemperatureData";
 import { TemperatureData } from "../../utils/useAddTemperatureData";
 import LoadingSpinner from "../../components/ui/LoadingSpinner";
 import useTemperatureData from "../../utils/useTemperatureData";
-import kelvinToCelsius from "../../utils/kelvinToFahrenheit";
+import kelvinToCelsius from "../../utils/kelvinToCelsius";
 import LoadingSkeleton from "../../components/ui/LoadingSkeleton";
-import SearchCitiesComboBox from "../../components/SearchCitiesCombobox";
-import Combobox from "../../components/ui/Combobox";
+import calculateWarmAndColdDays from "../../utils/calculateWarmAndColdDays";
+import calculateMode from "../../utils/calculateMode";
+import Select from "../../components/ui/Select";
+import useCitiesData from "../../utils/useCitiesData";
+import celsiusToKelvin from "../../utils/celsiusToKelvin";
 
 type StatisticsCardType = {
   title: string;
   value: string;
 };
 
-function StatisticsCard({ title, value }: StatisticsCardType) {
+export function StatisticsCard({ title, value }: StatisticsCardType) {
   return (
     <div className="bg-gray-800 p-4 w-full rounded-lg flex flex-col gap-2">
       <p className="text-xl">{title}</p>
@@ -32,13 +35,15 @@ export default function DashboardNew() {
     reset,
   } = useForm<TemperatureData>();
 
-  const { data, status } = useTemperatureData();
+  const { data: temperatureData, status } = useTemperatureData();
+
+  const { data: citiesData } = useCitiesData();
 
   const { mutate, isLoading } = useAddTemperatureData();
 
   const onSubmit: SubmitHandler<TemperatureData> = (data) => {
     const formData = {
-      temperature: Number(data.temperature),
+      temperature: celsiusToKelvin(Number(data.temperature)),
       location: Number(data.location),
       time: Math.floor(new Date(data.time).getTime() / 1000),
     };
@@ -46,52 +51,15 @@ export default function DashboardNew() {
     mutate(formData, { onSuccess: () => reset() });
   };
 
-  const averageTemperature = data ? data?.reduce((acc, curr) => acc + curr.temperature, 0) / data.length : 0;
+  const averageTemperature = temperatureData ? temperatureData.reduce((acc, curr) => acc + curr.temperature, 0) / temperatureData.length : 0;
 
   const averageTemperatureToCelsisus = averageTemperature ? kelvinToCelsius(averageTemperature) : 0;
 
-  // TODO
-  // REFACTOR CODE
+  const { coldDays, warmDays } = calculateWarmAndColdDays({ temperatureData });
 
-  let coldDays = 0;
-  let warmDays = 0;
+  let daysAboveAverage = temperatureData ? temperatureData.filter((day) => day.temperature >= averageTemperature).length : 0;
 
-  data?.forEach((day) => {
-    if (day.temperature <= averageTemperature) {
-      coldDays++;
-    } else {
-      warmDays++;
-    }
-  });
-
-  let daysAboveAverage = data ? data.filter((day) => kelvinToCelsius(day.temperature) >= averageTemperatureToCelsisus).length : 0;
-
-  [
-    { id: 1, temperature: 288 },
-    { id: 2, temperature: 288 },
-  ];
-
-  const countTemperatures: { [key: string]: number } = {};
-
-  data?.forEach((day) => {
-    if (countTemperatures[day.temperature]) {
-      countTemperatures[day.temperature]++;
-    } else {
-      countTemperatures[day.temperature] = 1;
-    }
-  });
-
-  let mostCommonTemperature = "";
-
-  for (const temperature in countTemperatures) {
-    if (mostCommonTemperature === "") {
-      mostCommonTemperature = temperature;
-    }
-
-    if (countTemperatures[temperature] > countTemperatures[mostCommonTemperature]) {
-      mostCommonTemperature = temperature;
-    }
-  }
+  const mostCommonTemperature = calculateMode({ temperatureData });
 
   return (
     <div className="flex flex-col gap-8">
@@ -100,18 +68,21 @@ export default function DashboardNew() {
 
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">
           <div className="grid grid-cols-2 gap-6">
-            <Input intent={errors.location ? "error" : "primary"} {...register("location", { required: true })} fullWidth id="locationInput" type="text" errorMessage="Location is required" placeholder="Celje">
-              Location
-            </Input>
+            <Select intent={errors.location ? "error" : "primary"} {...register("location", { required: true })} placeholder="Select a city" id="citySelect" errorMessage="City is required" label="Location" fullWidth>
+              {citiesData?.map((city) => (
+                <option className="bg-gray-800 text-gray-50" value={city.id} key={city.id}>
+                  {city.city_name}
+                </option>
+              ))}
+            </Select>
 
             <Input intent={errors.time ? "error" : "primary"} {...register("time", { required: true })} fullWidth id="locationInput" type="date" errorMessage="Date is required" placeholder="2022-05-25">
               Date
             </Input>
 
-            <Input intent={errors.temperature ? "error" : "primary"} {...register("temperature", { required: true })} fullWidth id="locationInput" type="text" errorMessage="Temperature is required" placeholder="32.5">
+            <Input intent={errors.temperature ? "error" : "primary"} {...register("temperature", { required: true })} fullWidth id="locationInput" type="text" errorMessage="Temperature is required" placeholder="32.5°C">
               Temperature
             </Input>
-            {/* <Combobox /> */}
           </div>
 
           <div>
@@ -125,13 +96,13 @@ export default function DashboardNew() {
         </form>
       </div>
       {status === "loading" && <LoadingSkeleton size={5} />}
-      {data && (
+      {temperatureData && (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <StatisticsCard title="Average temperature" value={`${averageTemperatureToCelsisus}°C`} />
           <StatisticsCard title="Cold days" value={`${coldDays}`} />
           <StatisticsCard title="Warm days" value={`${warmDays}`} />
           <StatisticsCard title="Days above average" value={`${daysAboveAverage}`} />
-          <StatisticsCard title="Most common temperature" value={`${kelvinToCelsius(Number(mostCommonTemperature))}°C`} />
+          <StatisticsCard title="Most common temperature" value={`${mostCommonTemperature}°C`} />
         </div>
       )}
     </div>
