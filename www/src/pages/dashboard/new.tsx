@@ -45,7 +45,7 @@ export default function DashboardNew() {
     const formData = {
       temperature: celsiusToKelvin(Number(data.temperature)),
       location: Number(data.location),
-      time: Math.floor(new Date(data.time).getTime() / 1000),
+      time: Math.floor(new Date(data.time).getTime()),
     };
 
     mutate(formData, { onSuccess: () => reset() });
