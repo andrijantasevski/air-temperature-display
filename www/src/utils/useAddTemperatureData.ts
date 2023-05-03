@@ -39,5 +39,16 @@ export default function useAddTemperatureData() {
 
       queryClient.invalidateQueries(["temperature"]);
     },
+    onError: () => {
+      toast.error("There was an error while adding the temperature!", {
+        position: "top-right",
+        style: {
+          borderRadius: "10px",
+          background: "#1F2937",
+          color: "#f9fafb",
+        },
+        duration: 1500,
+      });
+    },
   });
 }

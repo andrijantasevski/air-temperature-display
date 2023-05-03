@@ -67,7 +67,7 @@ export default function DashboardNew() {
         <h1 className="text-3xl font-bold">Add new weather data</h1>
 
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">
-          <div className="grid grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
             <Select intent={errors.location ? "error" : "primary"} {...register("location", { required: true })} placeholder="Select a city" id="citySelect" errorMessage="City is required" label="Location" fullWidth>
               {citiesData?.map((city) => (
                 <option className="bg-gray-800 text-gray-50" value={city.id} key={city.id}>

@@ -58,7 +58,7 @@ export default function DashboardStatistics() {
         <h1 className="text-3xl font-bold">Statistics</h1>
 
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">
-          <div className="grid grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
             <Input intent={errors.startDate ? "error" : "primary"} {...register("startDate", { required: true })} fullWidth id="locationInput" type="date" errorMessage="Start date is required" placeholder="2022-05-25">
               Start date
             </Input>
