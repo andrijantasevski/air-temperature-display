@@ -27,7 +27,7 @@ export default function DashboardOverview() {
 
   const pageIndex = searchParams.get("pageIndex");
 
-  const { data } = useTemperatureData();
+  const { data, status } = useTemperatureData();
 
   const { getHeaderGroups, getRowModel, getPageCount, getState, previousPage, nextPage, getCanNextPage, getCanPreviousPage } = useReactTable({
     data: data ?? [],
@@ -41,7 +41,7 @@ export default function DashboardOverview() {
     getPaginationRowModel: getPaginationRowModel(),
   });
 
-  function prevTablePage() {
+  function previousTablePage() {
     setSearchParams({ pageIndex: String(getState().pagination.pageIndex - 1) });
     previousPage();
   }
@@ -69,16 +69,26 @@ export default function DashboardOverview() {
                 </tr>
               ))}
             </thead>
-            <tbody className="divide-y divide-gray-500 bg-gray-700 rounded-lg">
-              {getRowModel().rows.map((row) => (
-                <tr key={row.id}>
-                  {row.getVisibleCells().map((cell) => (
-                    <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-100" key={cell.id}>
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                    </td>
-                  ))}
-                </tr>
-              ))}
+            <tbody className={`divide-y divide-gray-500 bg-gray-700 rounded-lg ${status === "loading" ? "animate-pulse" : ""}`}>
+              {data &&
+                getRowModel().rows.map((row) => (
+                  <tr key={row.id}>
+                    {row.getVisibleCells().map((cell) => (
+                      <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-100 w-1/3" key={cell.id}>
+                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+
+              {status === "loading" &&
+                [...Array(10)].map((_, i) => (
+                  <tr key={i}>
+                    <td className="whitespace-nowrap px-3 py-4 text-sm opacity-0 w-1/3">0</td>
+                    <td className="whitespace-nowrap px-3 py-4 text-sm opacity-0 w-1/3">0</td>
+                    <td className="whitespace-nowrap px-3 py-4 text-sm opacity-0 w-1/3">0</td>
+                  </tr>
+                ))}
             </tbody>
           </table>
         </div>
@@ -89,7 +99,7 @@ export default function DashboardOverview() {
           </div>
 
           <div className="flex items-center gap-4">
-            <Button intent={!getCanPreviousPage() ? "disabled" : "primary"} disabled={!getCanPreviousPage()} onClick={prevTablePage}>
+            <Button intent={!getCanPreviousPage() ? "disabled" : "primary"} disabled={!getCanPreviousPage()} onClick={previousTablePage}>
               Prev
             </Button>
             <Button intent={!getCanNextPage() ? "disabled" : "primary"} disabled={!getCanNextPage()} onClick={nextTablePage}>

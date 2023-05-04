@@ -7,7 +7,6 @@ import Dashboard from "./pages/dashboard";
 import DashboardNew from "./pages/dashboard/new";
 import DashboardStatistics from "./pages/dashboard/statistics";
 import DashboardOverview from "./pages/dashboard/overview";
-import DashboardByCity from "./pages/dashboard/by-city";
 import { Toaster } from "react-hot-toast";
 
 const queryClient = new QueryClient();
@@ -24,7 +23,6 @@ function App() {
                 <Route path="new" element={<DashboardNew />} />
                 <Route path="statistics" element={<DashboardStatistics />} />
                 <Route path="overview" element={<DashboardOverview />} />
-                <Route path="by-city" element={<DashboardByCity />} />
               </Route>
               <Route path="*" element={<NotFound />} />
             </Routes>
