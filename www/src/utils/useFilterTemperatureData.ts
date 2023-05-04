@@ -7,15 +7,17 @@ export default function useFilterTemperatureData(searchParams: URLSearchParams) 
 
   const searchQuery = startDate && endDate ? `?startDate=${startDate}&endDate=${endDate}` : "";
 
+  const queryKey = startDate && endDate ? ["temperature", startDate, endDate] : ["temperature"];
+
   async function fetchCitiesData() {
     const res = await fetch(`https://server.andrijantasevski.workers.dev/api/temperatures${searchQuery}`);
 
     if (!res.ok) {
-      throw new Error("Something went wrong");
+      throw new Error("There was an error fetching the data!");
     }
 
     return res.json();
   }
 
-  return useQuery<TemperatureData[]>({ queryFn: fetchCitiesData, queryKey: ["city", startDate, endDate] });
+  return useQuery<TemperatureData[]>({ queryFn: fetchCitiesData, queryKey });
 }

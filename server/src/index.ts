@@ -68,7 +68,10 @@ async function handleGetTemperatures(request: IRequest, env: Env) {
   const endDate = searchParams.get("endDate");
 
   if (startDate && endDate) {
-    const { data } = await supabase.from("temperature").select("*").gte("time", startDate).lte("time", endDate);
+    const startDateToUnix = new Date(startDate).getTime().toString();
+    const endDateToUnix = new Date(endDate).getTime().toString();
+
+    const { data } = await supabase.from("temperature").select("*").gte("time", startDateToUnix).lte("time", endDateToUnix);
 
     return new Response(JSON.stringify(data), {
       status: 200,

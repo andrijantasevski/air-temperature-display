@@ -4,6 +4,7 @@ import LoadingSkeleton from "../../components/ui/LoadingSkeleton";
 import calculateMode from "../../utils/calculateMode";
 import calculateWarmAndColdDays from "../../utils/calculateWarmAndColdDays";
 import kelvinToCelsius from "../../utils/kelvinToCelsius";
+import useThrottle from "../../utils/useThrottle";
 import useFilterTemperatureData from "../../utils/useFilterTemperatureData";
 import { StatisticsCard } from "./new";
 import { useForm, SubmitHandler } from "react-hook-form";
@@ -22,16 +23,18 @@ export default function DashboardStatistics() {
     handleSubmit,
     formState: { errors },
     reset,
-  } = useForm<FormInputs>();
+  } = useForm<FormInputs>({
+    defaultValues: {
+      startDate: searchParams.get("startDate") ?? "",
+      endDate: searchParams.get("endDate") ?? "",
+    },
+  });
 
   const onSubmit: SubmitHandler<FormInputs> = (data) => {
-    const formData = {
-      startDate: Math.floor(new Date(data.startDate).getTime()).toString(),
-      endDate: Math.floor(new Date(data.endDate).getTime()).toString(),
-    };
-
-    setSearchParams(formData);
+    setSearchParams(data);
   };
+
+  const throttledOnSubmit = useThrottle(onSubmit, 300);
 
   const { data: temperatureData, status } = useFilterTemperatureData(searchParams);
 
@@ -57,8 +60,8 @@ export default function DashboardStatistics() {
       <div className="flex flex-col gap-4">
         <h1 className="text-3xl font-bold">Statistics</h1>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">
-          <div className="grid grid-cols-2 gap-6">
+        <form onSubmit={handleSubmit(throttledOnSubmit)} className="flex flex-col gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
             <Input intent={errors.startDate ? "error" : "primary"} {...register("startDate", { required: true })} fullWidth id="locationInput" type="date" errorMessage="Start date is required" placeholder="2022-05-25">
               Start date
             </Input>

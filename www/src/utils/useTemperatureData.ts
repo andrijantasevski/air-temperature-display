@@ -6,7 +6,7 @@ export default function useTemperatureData() {
     const res = await fetch("https://server.andrijantasevski.workers.dev/api/temperatures");
 
     if (!res.ok) {
-      throw new Error("Something went wrong");
+      throw new Error("There was an error fetching the data!");
     }
 
     return res.json();
