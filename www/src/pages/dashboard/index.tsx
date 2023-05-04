@@ -1,5 +1,5 @@
 import { Link, useOutlet } from "react-router-dom";
-import { IconPlus, IconBorderAll, IconBuilding, IconGraph } from "@tabler/icons-react";
+import { IconPlus, IconBorderAll, IconGraph } from "@tabler/icons-react";
 
 type DashboardLinkProps = {
   children: React.ReactNode;
@@ -40,7 +40,6 @@ function DashboardCards() {
         <DashboardCard title="New" description="Add new data" icon={<IconPlus className="w-8 h-8" />} href="/dashboard/new" />
         <DashboardCard title="Statistics" description="View statistics for all cities" icon={<IconGraph className="w-8 h-8" />} href="/dashboard/statistics" />
         <DashboardCard title="Overview" description="View data in a table" icon={<IconBorderAll className="w-8 h-8" />} href="/dashboard/overview" />
-        <DashboardCard title="By city" description="View statistics by city" icon={<IconBuilding className="w-8 h-8" />} href="/dashboard/by-city" />
       </section>
     </div>
   );
@@ -71,11 +70,6 @@ export default function Dashboard() {
           <DashboardLink href="/dashboard/overview">
             <IconBorderAll className="w-5 h-5" />
             <span>Overview</span>
-          </DashboardLink>
-
-          <DashboardLink href="/dashboard/by-city">
-            <IconBuilding className="w-5 h-5" />
-            <span>By city</span>
           </DashboardLink>
         </section>
       </aside>
