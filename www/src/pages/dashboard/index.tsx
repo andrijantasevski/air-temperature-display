@@ -50,8 +50,8 @@ export default function Dashboard() {
   const outlet = useOutlet();
 
   return (
-    <div className="h-screen relative overflow-y-auto flex gap-6 p-4 md:p-6">
-      <aside className="hidden top-0 bottom-0 shrink-0 w-24 bg-gray-800 rounded-lg sticky md:flex flex-col items-center gap-8 py-6">
+    <div className="flex gap-6 p-4 md:p-6">
+      <aside className="hidden top-6 h-[calc(100vh-48px)] shrink-0 w-24 bg-gray-800 rounded-lg sticky md:flex flex-col items-center gap-8 py-6">
         <Link className="flex flex-col items-center gap-1" to="/dashboard">
           <img src="/logo.svg" alt="Logo" className="w-10" />
           <span className="font-bold">Breeze</span>
