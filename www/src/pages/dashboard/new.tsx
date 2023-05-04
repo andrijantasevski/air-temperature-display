@@ -1,8 +1,7 @@
 import Button from "../../components/ui/Button";
 import Input from "../../components/ui/Input";
 import { useForm, SubmitHandler } from "react-hook-form";
-import useAddTemperatureData from "../../utils/useAddTemperatureData";
-import { TemperatureData } from "../../utils/useAddTemperatureData";
+import useAddTemperatureData, { TemperatureDataInputs } from "../../utils/useAddTemperatureData";
 import LoadingSpinner from "../../components/ui/LoadingSpinner";
 import useTemperatureData from "../../utils/useTemperatureData";
 import kelvinToCelsius from "../../utils/kelvinToCelsius";
@@ -33,7 +32,7 @@ export default function DashboardNew() {
     handleSubmit,
     formState: { errors },
     reset,
-  } = useForm<TemperatureData>();
+  } = useForm<TemperatureDataInputs>();
 
   const { data: temperatureData, status } = useTemperatureData();
 
@@ -41,7 +40,7 @@ export default function DashboardNew() {
 
   const { mutate, isLoading } = useAddTemperatureData();
 
-  const onSubmit: SubmitHandler<TemperatureData> = (data) => {
+  const onSubmit: SubmitHandler<TemperatureDataInputs> = (data) => {
     const formData = {
       temperature: celsiusToKelvin(Number(data.temperature)),
       location: Number(data.location),

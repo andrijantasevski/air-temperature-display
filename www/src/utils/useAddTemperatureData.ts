@@ -5,12 +5,17 @@ export type TemperatureData = {
   location: number;
   time: number;
   temperature: number;
+  city: {
+    city_name: string;
+  };
 };
+
+export type TemperatureDataInputs = Omit<TemperatureData, "city">;
 
 export default function useAddTemperatureData() {
   const queryClient = useQueryClient();
 
-  async function postTemperatureData(data: TemperatureData) {
+  async function postTemperatureData(data: TemperatureDataInputs) {
     const response = await fetch("https://server.andrijantasevski.workers.dev/api/temperatures", {
       method: "POST",
       body: JSON.stringify(data),
@@ -24,7 +29,7 @@ export default function useAddTemperatureData() {
     return dataResponse;
   }
 
-  return useMutation<TemperatureData, Error, TemperatureData>({
+  return useMutation<TemperatureDataInputs, Error, TemperatureDataInputs>({
     mutationFn: (data) => postTemperatureData(data),
     onSuccess: () => {
       toast.success("Temperature data added successfully!", {
