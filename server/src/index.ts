@@ -82,7 +82,7 @@ async function handleGetTemperatures(request: IRequest, env: Env) {
     });
   }
 
-  const { data } = await supabase.from("temperature").select("*");
+  const { data } = await supabase.from("temperature").select(`*, city (city_name)`);
 
   return new Response(JSON.stringify(data), {
     status: 200,

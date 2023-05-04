@@ -5,6 +5,9 @@ export type TemperatureData = {
   location: number;
   time: number;
   temperature: number;
+  city: {
+    city_name: string;
+  };
 };
 
 export default function useAddTemperatureData() {
