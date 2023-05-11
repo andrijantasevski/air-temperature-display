@@ -1,5 +1,6 @@
 import { Link, useOutlet } from "react-router-dom";
-import { IconPlus, IconBorderAll, IconGraph } from "@tabler/icons-react";
+import { IconPlus, IconBorderAll, IconGraph, IconMenu } from "@tabler/icons-react";
+import * as Menubar from "@radix-ui/react-menubar";
 
 type DashboardLinkProps = {
   children: React.ReactNode;
@@ -49,7 +50,45 @@ export default function Dashboard() {
   const outlet = useOutlet();
 
   return (
-    <div className="flex gap-6 p-4 md:p-6">
+    <div className="flex flex-col md:flex-row gap-4 md:gap-6 p-4 md:p-6">
+      <nav className="md:hidden bg-gray-800 p-4 rounded-lg flex justify-between items-center">
+        <Link to="/dashboard" className="flex items-center gap-2">
+          <img src="/logo.svg" className="w-9 h-9" />
+          <span className="font-bold text-lg">Breeze</span>
+        </Link>
+
+        <Menubar.Root>
+          <Menubar.Menu>
+            <Menubar.Trigger className="flex justify-center items-center">
+              <IconMenu className="w-6 h-6" />
+            </Menubar.Trigger>
+
+            <Menubar.Content className="w-56 bg-gray-700 rounded-lg p-1 z-50" align="end" side="bottom" sideOffset={4}>
+              <Link to="/dashboard/new" className="w-full p-2 flex items-center hover:text-primary-400 transition-colors">
+                <Menubar.Item className="inline-flex gap-2 items-center w-full">
+                  <IconPlus className="w-4 h-4" />
+                  New
+                </Menubar.Item>
+              </Link>
+
+              <Link to="/dashboard/statistics" className="w-full p-2 flex items-center hover:text-primary-400 transition-colors">
+                <Menubar.Item className="inline-flex gap-2 items-center w-full">
+                  <IconGraph className="w-4 h-4" />
+                  Statistics
+                </Menubar.Item>
+              </Link>
+
+              <Link to="/dashboard/overview" className="w-full p-2 flex items-center hover:text-primary-400 transition-colors">
+                <Menubar.Item className="inline-flex gap-2 items-center w-full">
+                  <IconBorderAll className="w-4 h-4" />
+                  Overview
+                </Menubar.Item>
+              </Link>
+            </Menubar.Content>
+          </Menubar.Menu>
+        </Menubar.Root>
+      </nav>
+
       <aside className="hidden top-6 h-[calc(100vh-48px)] shrink-0 w-24 bg-gray-800 rounded-lg sticky md:flex flex-col items-center gap-8 py-6">
         <Link className="flex flex-col items-center gap-1" to="/dashboard">
           <img src="/logo.svg" alt="Logo" className="w-10" />
