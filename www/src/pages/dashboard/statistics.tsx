@@ -62,11 +62,11 @@ export default function DashboardStatistics() {
 
         <form onSubmit={handleSubmit(throttledOnSubmit)} className="flex flex-col gap-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-            <Input intent={errors.startDate ? "error" : "primary"} {...register("startDate", { required: true })} fullWidth id="locationInput" type="date" errorMessage="Start date is required" placeholder="2022-05-25">
+            <Input intent={errors.startDate ? "error" : "primary"} {...register("startDate", { required: true })} fullWidth id="startDateInput" type="date" errorMessage="Start date is required" placeholder="2022-05-25">
               Start date
             </Input>
 
-            <Input intent={errors.endDate ? "error" : "primary"} {...register("endDate", { required: true })} fullWidth id="locationInput" type="date" errorMessage="End date is required" placeholder="2022-05-25">
+            <Input intent={errors.endDate ? "error" : "primary"} {...register("endDate", { required: true })} fullWidth id="endDateInput" type="date" errorMessage="End date is required" placeholder="2022-05-26">
               End date
             </Input>
           </div>
