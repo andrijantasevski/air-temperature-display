@@ -135,8 +135,18 @@ async function handlePostTemperatures(request: IRequest, env: Env) {
   });
 }
 
+async function handleScheduled(controller: ScheduledController, env: Env, ctx: ExecutionContext): Promise<void> {
+  const supabase = createClient(env.SUPABASE_URL, env.SUPABASE_ANON_KEY);
+
+  const { data: citiesData } = await supabase.from("city").select("*");
+  const { data: temperatureData } = await supabase.from("temperature").select("*");
+
+  console.log("Cron executed at", new Date().toLocaleDateString());
+}
+
 router.options("*", handleOptions).get("/api/cities", handleGetCities).get("/api/cities/:id", handleGetCity).get("/api/temperatures", handleGetTemperatures).post("/api/temperatures", handlePostTemperatures);
 
 export default {
   fetch: router.handle,
+  scheduled: handleScheduled,
 };
