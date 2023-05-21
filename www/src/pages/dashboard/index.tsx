@@ -1,5 +1,10 @@
-import { Link, useOutlet } from "react-router-dom";
-import { IconPlus, IconBorderAll, IconGraph, IconMenu } from "@tabler/icons-react";
+import { Link, NavLink, useOutlet } from "react-router-dom";
+import {
+  IconPlus,
+  IconBorderAll,
+  IconGraph,
+  IconMenu,
+} from "@tabler/icons-react";
 import * as Menubar from "@radix-ui/react-menubar";
 
 type DashboardLinkProps = {
@@ -9,9 +14,16 @@ type DashboardLinkProps = {
 
 function DashboardLink({ children, href }: DashboardLinkProps) {
   return (
-    <Link className="flex flex-col gap-2 items-center font-medium text-sm hover:text-primary-400 transition-colors" to={href}>
+    <NavLink
+      className={({ isActive }) =>
+        `flex flex-col gap-2 items-center font-medium text-sm hover:text-primary-400 transition-colors ${
+          isActive ? "text-primary-400" : ""
+        }`
+      }
+      to={href}
+    >
       {children}
-    </Link>
+    </NavLink>
   );
 }
 
@@ -24,10 +36,19 @@ type DashboardCardProps = {
 
 function DashboardCard({ href, icon, title, description }: DashboardCardProps) {
   return (
-    <Link to={href} className="bg-gray-800 p-4 w-full rounded-lg flex flex-col gap-2 group">
-      <span className="group-hover:text-primary-400 transition-colors">{icon}</span>
-      <p className="text-xl font-medium group-hover:text-primary-400 transition-colors">{title}</p>
-      <p className="text-gray-400 group-hover:text-primary-400 transition-colors">{description}</p>
+    <Link
+      to={href}
+      className="bg-gray-800 p-4 w-full rounded-lg flex flex-col gap-2 group"
+    >
+      <span className="group-hover:text-primary-400 transition-colors">
+        {icon}
+      </span>
+      <p className="text-xl font-medium group-hover:text-primary-400 transition-colors">
+        {title}
+      </p>
+      <p className="text-gray-400 group-hover:text-primary-400 transition-colors">
+        {description}
+      </p>
     </Link>
   );
 }
@@ -38,9 +59,24 @@ function DashboardCards() {
       <h1 className="text-3xl font-bold">Dashboard</h1>
 
       <section className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
-        <DashboardCard title="New" description="Add new data" icon={<IconPlus className="w-8 h-8" />} href="/dashboard/new" />
-        <DashboardCard title="Statistics" description="View statistics for all cities" icon={<IconGraph className="w-8 h-8" />} href="/dashboard/statistics" />
-        <DashboardCard title="Overview" description="View data in a table" icon={<IconBorderAll className="w-8 h-8" />} href="/dashboard/overview" />
+        <DashboardCard
+          title="New"
+          description="Add new data"
+          icon={<IconPlus className="w-8 h-8" />}
+          href="/dashboard/new"
+        />
+        <DashboardCard
+          title="Statistics"
+          description="View statistics for all cities"
+          icon={<IconGraph className="w-8 h-8" />}
+          href="/dashboard/statistics"
+        />
+        <DashboardCard
+          title="Overview"
+          description="View data in a table"
+          icon={<IconBorderAll className="w-8 h-8" />}
+          href="/dashboard/overview"
+        />
       </section>
     </div>
   );
@@ -63,22 +99,36 @@ export default function Dashboard() {
               <IconMenu className="w-6 h-6" />
             </Menubar.Trigger>
 
-            <Menubar.Content className="w-56 bg-gray-700 rounded-lg p-1 z-50" align="end" side="bottom" sideOffset={4}>
-              <Link to="/dashboard/new" className="w-full p-2 flex items-center hover:text-primary-400 transition-colors">
+            <Menubar.Content
+              className="w-56 bg-gray-700 rounded-lg p-1 z-50"
+              align="end"
+              side="bottom"
+              sideOffset={4}
+            >
+              <Link
+                to="/dashboard/new"
+                className="w-full p-2 flex items-center hover:text-primary-400 transition-colors"
+              >
                 <Menubar.Item className="inline-flex gap-2 items-center w-full">
                   <IconPlus className="w-4 h-4" />
                   New
                 </Menubar.Item>
               </Link>
 
-              <Link to="/dashboard/statistics" className="w-full p-2 flex items-center hover:text-primary-400 transition-colors">
+              <Link
+                to="/dashboard/statistics"
+                className="w-full p-2 flex items-center hover:text-primary-400 transition-colors"
+              >
                 <Menubar.Item className="inline-flex gap-2 items-center w-full">
                   <IconGraph className="w-4 h-4" />
                   Statistics
                 </Menubar.Item>
               </Link>
 
-              <Link to="/dashboard/overview" className="w-full p-2 flex items-center hover:text-primary-400 transition-colors">
+              <Link
+                to="/dashboard/overview"
+                className="w-full p-2 flex items-center hover:text-primary-400 transition-colors"
+              >
                 <Menubar.Item className="inline-flex gap-2 items-center w-full">
                   <IconBorderAll className="w-4 h-4" />
                   Overview
